@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain_core.messages import HumanMessage
+from langchain_core.prompts import PromptTemplate
+from langchain_core.messages import SystemMessage, HumanMessage
 
 from app.config import OPENAI_API_KEY
 
@@ -11,9 +11,17 @@ llm = ChatOpenAI(
     temperature=0
 )
 
+system_message = SystemMessage(
+    content=(
+        "You are a factual question-answering system. "
+        "Reply with ONLY the correct single-word answer. "
+        "No explanations. No repetition."
+    )
+)
+
 prompt_template = PromptTemplate(
     input_variables=["question"],
-    template="Answer the following question in one word only:\n{question}"
+    template="{question}"
 )
 
 
@@ -22,6 +30,7 @@ def ask_ai(question: str) -> str:
 
     response = llm.invoke(
         [
+            system_message,
             HumanMessage(content=prompt)
         ]
     )
