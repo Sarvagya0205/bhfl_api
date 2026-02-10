@@ -26,6 +26,8 @@ prompt_template = PromptTemplate(
 
 
 def ask_ai(question: str) -> str:
+    if not OPENAI_API_KEY:
+        return "Unavailable"
     prompt = prompt_template.format(question=question)
 
     response = llm.invoke(
